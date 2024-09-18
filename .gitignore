@@ -1,0 +1,8 @@
+# dependency directories
+node_modules
+
+# build directories
+.next
+
+# os cruft
+.DS_Store

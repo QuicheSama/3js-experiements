@@ -112,5 +112,5 @@ function createBoardStore() {
     }
 }
 
-export { TileState, createBoardStore }
-export type { TileStateType, TilePosition };
+export { createBoardStore }
+export type { TilePosition };

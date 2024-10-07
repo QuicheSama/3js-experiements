@@ -12,6 +12,7 @@ type TileStateType = (typeof TileState)[keyof typeof TileState];
  * array indices, [row, col]
  */
 type TilePosition = [number, number];
+
 const DEFAULT_SIDE_LENGTH = 3;
 
 // prettier-ignore
@@ -30,11 +31,13 @@ const possibleWinningPositions: TilePosition[][] = [
     [[0, 0], [1, 1], [2, 2]],
     [[0, 2], [1, 1], [2, 0]],
 ]
+
 const newBoard = (sideLength: number): TileStateType[][] =>
 	Array(sideLength)
 		.fill('')
 		.map(() => Array(sideLength).fill(TileState.Unclaimed));
-const deepCopyArray2D = <T>(arr: Array<Array<T>>) => arr.map((row) => row.slice());
+
+const deepCopyArray2D = <T>(arr: T[][]) => arr.map((row) => row.slice());
 
 function createBoardStore() {
 	const board = writable<TileStateType[][]>(newBoard(DEFAULT_SIDE_LENGTH));
@@ -64,6 +67,7 @@ function createBoardStore() {
 		for (const positions of possibleWinningPositions) {
 			if (positions.every(([row, col]) => currentBoard[row][col] === get(currentPlayer))) {
 				win.set(positions);
+				return;
 			}
 		}
 	});

@@ -83,7 +83,7 @@ function createBoardStore() {
 		win: readonly(win),
 		gameover: readonly(gameover),
 		selectTile: (position: TilePosition) => {
-			if (get(win) !== null) {
+			if (get(gameover)) {
 				console.log('Game over, please reset game store.');
 				return;
 			}
@@ -123,5 +123,7 @@ function createBoardStore() {
 	};
 }
 
+type TicTacToeBoardStore = ReturnType<typeof createBoardStore>;
+
 export { createBoardStore };
-export type { TilePosition };
+export type { TilePosition, TicTacToeBoardStore };

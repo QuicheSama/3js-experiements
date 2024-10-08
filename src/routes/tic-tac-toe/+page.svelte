@@ -1,55 +1,36 @@
 <script lang="ts">
+	import threeJsRenderer from '$lib/actions/renderer';
+	import { onMount } from 'svelte';
 	import { createBoardStore } from '$lib/stores/tic-tac-toe';
-	const { board, turn, currentPlayer, win, gameover, selectTile, nextTurn, reset } = createBoardStore();
+	import TicTacToeDebug from './TicTacToeDebug.svelte';
+	let height: number = 500;
+	let width: number = 500;
+	const gameStore = createBoardStore();
+	const { board, win, gameover } = gameStore;
+	onMount(() => {
+		// const handleResize = () => {
+		// 	height = window.innerHeight;
+		// 	width = window.innerWidth;
+		// };
+		// handleResize();
+
+		// window.addEventListener('resize', handleResize);
+		// return () => {
+		// 	window.removeEventListener('resize', handleResize);
+		// };
+	});
 </script>
 
 <div>
-	<div>
-		turn: {$turn}, {$currentPlayer}'s move
-	</div>
-	<table>
-		<tbody>
-			{#each $board as row, rowIdx (`${rowIdx},${row.join('-')}`)}
-				<tr>
-					{#each row as cell, colIdx (`${cell}@${rowIdx},${colIdx}`)}
-						<td 
-							class:orange={$gameover && $win == null}
-							class:green={$win?.some(([row, col]) => row === rowIdx && col === colIdx)}
-						>
-							<button
-								on:click={() => {
-									selectTile([rowIdx, colIdx]);
-									nextTurn();
-								}}>{cell}</button
-							>
-						</td>
-					{/each}
-				</tr>
-			{/each}
-		</tbody>
-	</table>
-	<div >
-		<button on:click={reset}>reset</button>
-		<div 
-			class:hidden={!$gameover}
-			class:green={$gameover && $win !== null}
-			class:orange={$gameover && $win === null}
-		>
-			{$win == null ? 'Draw' : `${$currentPlayer} wins!`}, Game Over.
-		</div>
-	</div>
+	<TicTacToeDebug {...gameStore}/>
+	<canvas {height} {width} use:threeJsRenderer={{ height, width, board: $board, win: $win, gameover: $gameover }} />	
 </div>
 
 <style>
-	.green {
-		background-color: green;
-	}
-	
-	.orange {
-		background-color: orange;
-	}
-
-	.hidden {
-		visibility: hidden;
-	}
+	/* canvas {
+		position: fixed;
+		top: 0;
+		left: 0;
+		outline: none;
+	} */
 </style>

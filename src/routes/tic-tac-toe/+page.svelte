@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createBoardStore } from '$lib/stores/tic-tac-toe';
-	const { board, turn, currentPlayer, win, selectTile, nextTurn, reset } = createBoardStore();
+	const { board, turn, currentPlayer, win, gameover, selectTile, nextTurn, reset } = createBoardStore();
 </script>
 
 <div>
@@ -12,7 +12,10 @@
 			{#each $board as row, rowIdx (`${rowIdx},${row.join('-')}`)}
 				<tr>
 					{#each row as cell, colIdx (`${cell}@${rowIdx},${colIdx}`)}
-						<td class:green={$win?.some(([row, col]) => row === rowIdx && col === colIdx)}>
+						<td 
+							class:orange={$gameover && $win == null}
+							class:green={$win?.some(([row, col]) => row === rowIdx && col === colIdx)}
+						>
 							<button
 								on:click={() => {
 									selectTile([rowIdx, colIdx]);
@@ -25,14 +28,28 @@
 			{/each}
 		</tbody>
 	</table>
-	<div class:green={$win !== null}>
+	<div >
 		<button on:click={reset}>reset</button>
-		{$win == null ? '' : `${$currentPlayer} wins!`}
+		<div 
+			class:hidden={!$gameover}
+			class:green={$gameover && $win !== null}
+			class:orange={$gameover && $win === null}
+		>
+			{$win == null ? 'Draw' : `${$currentPlayer} wins!`}, Game Over.
+		</div>
 	</div>
 </div>
 
 <style>
 	.green {
 		background-color: green;
+	}
+	
+	.orange {
+		background-color: orange;
+	}
+
+	.hidden {
+		visibility: hidden;
 	}
 </style>

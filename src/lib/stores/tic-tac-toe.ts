@@ -49,6 +49,10 @@ function createBoardStore() {
 		return $turn % 2 === 1 ? TileState.Claimed_O : TileState.Claimed_X;
 	});
 
+	const gameover = derived([turn, win], ([$turn, $win]) => {
+		return $turn >= 9 || $win !== null;
+	});
+
 	selectedTile.subscribe((selection) => {
 		if (selection == null) {
 			return;
@@ -77,6 +81,7 @@ function createBoardStore() {
 		turn: readonly(turn),
 		currentPlayer: readonly(currentPlayer),
 		win: readonly(win),
+		gameover: readonly(gameover),
 		selectTile: (position: TilePosition) => {
 			if (get(win) !== null) {
 				console.log('Game over, please reset game store.');
@@ -104,11 +109,10 @@ function createBoardStore() {
 			selectedTile.set(position);
 		},
 		nextTurn: () => {
-			if (get(win) == null) {
-				turn.update((n) => n + 1);
+			if (get(gameover)) {
 				return;
 			}
-			console.log('Game completed, please reset store to start new game.');
+			turn.update((n) => n + 1);
 		},
 		reset: () => {
 			win.set(null);
